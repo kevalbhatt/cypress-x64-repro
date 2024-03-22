@@ -1,0 +1,42 @@
+
+FROM --platform=linux/amd64 ghcr.io/oracle/oraclelinux:8-slim
+
+RUN microdnf -y update && microdnf clean all
+
+ARG CYPRESS_UI_LINK
+ENV CYPRESS_UI_LINK=$CYPRESS_UI_LINK
+
+ARG CYPRESS_VIDEO
+ENV CYPRESS_VIDEO=$CYPRESS_VIDEO
+ENV CYPRESS_SCREENSHOT_ON_RUN_FAILURE=$CYPRESS_VIDEO
+
+ARG CYPRESS_EXCLUDE_SPEC_PATTERN
+ENV CYPRESS_EXCLUDE_SPEC_PATTERN=$CYPRESS_EXCLUDE_SPEC_PATTERN
+
+ARG BUILD_VER
+ENV BUILD_VER=$BUILD_VER
+
+COPY cypress /usr/src/app
+WORKDIR /usr/src/app
+
+RUN mkdir -p /etc/
+COPY run.sh /etc/
+
+RUN microdnf -y module enable nodejs:20 && \
+    microdnf -y install nodejs npm && \
+    # Install cypress dependencies
+    microdnf install -y xorg-x11-server-Xvfb gtk2-devel gtk3-devel libnotify-devel GConf2 nss libXScrnSaver alsa-lib unzip
+
+ENV CYPRESS_CACHE_FOLDER='~/CypressCache'
+RUN curl -G -L -v -o cypress.zip --data-urlencode "platform=linux" --data-urlencode "arch=x64" "https://download.cypress.io/desktop/13.6.5"
+
+ENV CYPRESS_INSTALL_BINARY=/usr/src/app/cypress.zip
+RUN if [ ! -f "$CYPRESS_INSTALL_BINARY" ]; then echo 'cypress.zip not found.'; exit 1; fi
+
+RUN CYPRESS_INSTALL_BINARY=0 npm install && \
+    chmod +x /etc/run.sh && \
+    microdnf clean all
+
+RUN node -v && npm -v
+
+ENTRYPOINT []

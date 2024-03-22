@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "start": "cypress run",
+    "cypress-install": "cypress install"
+  },
+  "dependencies": {
+    "cypress": "^13.6.5"
+  }
+}

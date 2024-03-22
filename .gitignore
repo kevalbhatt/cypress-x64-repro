@@ -1,0 +1,46 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+coverage/
+
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+build/Release
+build/
+codegen/
+.cache-loader/
+
+# Dependency directories
+node_modules
+jspm_packages
+
+# Optional npm cache directory
+.npm
+
+# Packaging
+dist/
+
+# screenshot files
+*.png
+
+# environment variables for the local development machine
+DONOTCHECKIN.env
+.env
+
+# VS Code files
+.vscode/*
+!.vscode/launch.json
+
+# api package
+!api/**/dist
+
+# Misc
+.DS_Store
+.idea
+
+# Yarn debug files
+yarn-error.log
+yarn-debug.log
+
+# cypress
+cypress/videos
